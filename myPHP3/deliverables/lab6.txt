@@ -1,0 +1,176 @@
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 1 
+ 
+LAB 6 MÔN LẬP TRÌNH PHP3: AUTHENTICATION VÀ MIDDLEWARE 
+MỤC TIÊU: 
+Kết thúc bài thực hành này bạn có khả năng 
+✓ Triển khai authentication trong website 
+✓ Tạo và sử dụng middleware trong Laravel 
+NỘI DUNG 
+Chuẩn bị:  
+1. Cài Laravel vào folder la6 
+2. Tạo database có tên la6 và file .env cấu hình kết nối đến database vừa tạo. 
+Bài 1: Cài Starter Kit Laravel Breeze 
+1. Cài starter kit Laravel Breeze 
+Trong folder project, lần lượt chạy các lệnh: 
+composer require laravel/breeze --dev  
+php artisan breeze:install 
+npm install 
+npm run dev 
+2. Chuẩn bị users  
+- Vào folder database/migrations, và mở file là xxx_create_users_table.php 
+- Trong hàm up, bổ sung thêm field mới diachi, idgroup như sau:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 2 
+ 
+- Chạy php artisan migrate , xong vào db sẽ phải thấy table users với các field: 
+ 
+3. Chèn dữ liệu vào bảng users 
+- Mở seeds/DatabaseSeeder.php, code trong hàm run để chèn users như sau 
+ public function run()    { 
+        \App\Models\User::factory(10)->create(); 
+        \DB::table('users')->insert([ 
+            'name' => 'Vui Từng Phút Giây', 'email' => 'vuiqua@gmail.com', 
+            'password' => bcrypt('hehe'),   'idgroup' => 1,'diachi'=>'TPHCM' 
+        ]); 
+        \DB::table('users')->insert([ 
+            'name' => 'Buồn Từng Phút Giây','email' => 'buonqua@gmail.com', 
+            'password' => bcrypt('huhu'),   'idgroup' => 1, 'diachi'=>'TPHCM' 
+        ]); 
+        \DB::table('users')->insert([ 
+            'name' => 'Nguyen Thi Gia Hu',  'email' => 'giahu@gmail.com', 
+            'password' => bcrypt('hihi'),   'idgroup' => 0, 'diachi'=>'HN' 
+        ]); 
+    } 
+- Chạy php artisan db:seed  sẽ phải thấy các user được chèn trong bảng users 
+- Xem các route authentication được support:   
+Mở routes/web.php, sẽ thấy lệnh  require file auth.php.  Mở file auth.php sẽ thấy 
+các route được hỗ trợ. Cũng có thể xem các route bằng lệnh php artisan route:list
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 3 
+ 
+ 
+4. Test hoạt động các chức năng authentication 
+a. Test chức năng đăng nhập http://localhost:8000/login  ➔ sẽ phải đăng nhập 
+được với các user đã tạo 
+b. Test chức năng đăng ký http://localhost:8000/register  ➔ sẽ phải đăng ký 
+được và đăng nhập được với các user mới 
+c. Test chức năng forgot-password http://localhost:8000/forgot-password  ➔ sẽ 
+thấy báo lỗi không gửi mail được .  
++ Mở file  .env và cấu hình email cho đúng (email, mật khẩu…) 
+MAIL_MAILER=smtp 
+MAIL_HOST=smtp.gmail.com 
+MAIL_PORT=465 
+MAIL_USERNAME=HopThuCuaBan@gmail.com 
+MAIL_PASSWORD=MậtKhẩuCủaBạn 
+MAIL_ENCRYPTION=ssl 
+MAIL_FROM_ADDRESS="HopThuCuaBan@gmail.com" 
+MAIL_FROM_NAME="Họ tên người gửi" 
++ Vào hộp thư vừa khai báo và bật tính năng truy cập kém an toàn cho ứ dụng 
++ Test lại sẽ thấy  gửi mail thành công  
+ 
+d. Chú ý 1: Nếu gửi mail không được do lỗi gửi từ localhost thì mở file 
+config/mail.php và cấu hình bổ sung như sau, sẽ gửi được
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 4 
+ 
+ 
+'stream' => [ 
+   'ssl' => [ 
+       'allow_self_signed' => true, 
+       'verify_peer' => false, 
+       'verify_peer_name' => false, 
+   ], 
+], 
+e. Chú ý 2: Nếu gặp lỗi như bên dưới thì phần nhiều do chương trình antivirus 
+chặn port, tạm tắt antivirus là xong.
+ 
+Bài 2:  Hạn chế truy cập và hiện thông tin  user login 
+Vớo các chức năng trong website chỉ cho phép thành viên đã đăng nhập được sử 
+dụng, có 2 cách hiện thực: hạn chế truy cập qua route và code trong controller. 
+1. Hạn chế truy cập qua route 
+Trong các route cần hạn chế truy cập , thêm middleware auth để 
+- Tạo route 
+Route::get('download', function(){ 
+    return view("download"); 
+}); 
+- Tạo views/download.blade.php
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 5 
+ 
+<p>Chào bạn !</p> 
+Đây là trang download software, chỉ dành cho thành viên đã đăng nhập  
+- Test: Nếu đã login thì hãy logout. Xong test bằng cách vào 
+http://localhost:8000/download sẽ thấy view download 
+- Hạn chế truy cập bằng cách thêm middleware vào route  
+Route::get('download', function(){ 
+    return view("download"); 
+})->middleware('auth'); 
+- Vào lại địa chỉ download như trên sẽ không còn thấy view download nữa mà sẽ 
+thấy form login => Đăng nhập vào thành công mới thấy view download hiện ra. 
+2. Hạn chế truy cập trong controller 
+Trong hàm __construct của controller, thêm lệnh $this->middleware('auth');  sẽ 
+hạn chế đăng nhập cho mọi action trong controller. 
+- Tạo QuanTriTinController và code như sau: 
+ 
+- Routing 
+ 
+- Test: Nếu đã login thì hãy logout. Xong test b ằng cách vào 
+http://localhost:8000/quantritin sẽ thấy bị buộc phải đăng nhập 
+ 
+3. Hiện thông tin user login 
+Trong view download, chỉnh view download để được như sau:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 6 
+ 
+<p>Chào bạn <?=Auth::user()->name?> </p> 
+Đây là trang download software, chỉ dành cho thành viên đăng nhập  
+<p><a href="thoat">Thóat</a></p> 
+Xem lại thử sẽ thấy tên user login hiện ra 
+Bài 3: Sử dụng middleware 
+1. Tạo middleware Quantri 
+- Chạy lệnh 
+php artisan make:middleware Quantri 
+- Mở app/Http/ Middleware/Quantri.php và code  trong hàm handle 
+ 
+ 
+2. Đăng ký middleware với Laravel  
+Mở app/Http/Kernel.php rồi code thêm:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 7 
+ 
+3. Bảo vệ route - chỉ dành cho admin  
+- Bảo vệ 1 route với middleware đã tạo: 
+ 
+- Tạo views/quantri.blade.php và code:  
+ 
+- Test:  http://localhost:8000/quantri ➔ chỉ có user buonqua và vuiqua vào được 
+(vì sao?) 
+Bài 4: Thực hiện các yêu cầu theo gợi ý 
+1. Việt hóa các views đăng ký, đăng nhập 
+Gợi ý : Mở auth/register.blade.php và auth/login.blade.php  + định dạng.  
+  
+2. Bổ sung field nghenghiep, phai vào form đăng ký.  
+Gợi ý: 
+- Mở views/auth/register.blade.php bổ sung field nghenghiep, phai 
+- Mở Controllers/Auth/RegisterController.php  bổ sung field nghenghiep, phai 
+- Mở App\User.php bổ sung field nghenghiep, phai 
+3. Hạn chế truy cập bằng http bacsic authentication 
+Tạo 1 route và hạn chế truy cập bằng http basic
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 8 
+ 
+  
+ 
+*** Yêu cầu nộp bài:  
+SV nén file (hoặc share thư mục google drive) bao gồm các yêu cầu đã thực hiện 
+trên, nộp LMS đúng thời gian quy định của giảng viên. KH&#5178114;NG NỘP BÀI COI NHƯ 
+KH&#5178114;NG C&#5178113; ĐIỂM.  
+--- Hết ---

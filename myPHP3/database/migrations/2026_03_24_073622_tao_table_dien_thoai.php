@@ -20,7 +20,7 @@ return new class extends Migration
             $table->dateTime('ngayCapNhat');
             $table->double('gia', 8, 2);
             $table->double('giaKM', 8, 2)->nullable();
-            $table->double('urlHinh', 8, 2)->nullable();
+            $table->string('urlHinh', 255)->nullable();
             $table->integer('soLuongTonKho')->default(0);
             $table->boolean('hot')->default(0);
             $table->boolean('TrangThai')->default(1);

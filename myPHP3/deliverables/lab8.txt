@@ -1,0 +1,91 @@
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 1 
+ 
+LAB 8 MÔN LẬP TRÌNH PHP3: RESTFUL API WITH LARAVEL 
+MỤC TIÊU: 
+Kết thúc bài thực hành này bạn có khả năng 
+✓ Hiểu về Restful API của ứng dụng web 
+✓ Triển khai Restful API trong Laravel 
+NỘI DUNG 
+Chuẩn bị project:  
+1. Cài Laravel vào folder la8 
+2. Tạo database có tên la8 và file .env cấu hình kết nối đến database vừa tạo. 
+3. Cài đặt postman (nếu chưa cài) 
+Bài 1:  Triển khai Resful  
+1. Tạo table và dữ liệu 
+a. Sinh viên tạo table products với thông tin yêu cầu như sau 
+ 
+b. Nhập vài record dữ liệu vào table (dùng seeder) 
+c. Tạo model Product rồi mở file model khai báo các field : 
+ 
+d. Tạo eloquent resource 
+- Chạy lệnh sau để tạo eloquent resource có tên Product 
+ 
+- Mở file resouse mới tạo (trong app/http/Resources) , khai báo tên thân thiện 
+và định dạng cho các field
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 2 
+ 
+ 
+e. Tạo controller resource 
+- Chạy lệnh:  
+ 
+- Thêm code ở đầu controller:  (khai báo dùng Validator, model Product và 
+ProductResouce)  
+use Validator; 
+use App\Models\Product; 
+use App\Http\Resources\Product as ProductResource; 
+f. Tạo Route API: routes/api.php 
+ 
+g. Xem kết quả các route được hỗ trợ: php artisan route:list 
+Bài 2: Tạo các chức năng quản lý resource 
+1. Tạo resource mới 
+- Code trong  hàm store của ProductController:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 3 
+ 
+ 
+- Test với Postman, xong xem trong db phải có  dữ liệu mới 
+ 
+2. Cập nhật 1 resource  
+- Code trong  hàm update của ProductController:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 4 
+ 
+- Test với Postman, xong xem trong db phải thấy dữ liệu mới được cập nhật 
+ 
+3. Trả về danh sách resource 
+- Code trong  hàm index của ProductController: 
+ 
+- Test với Postman, sẽ thấy dữ liệu. Chú ý : các cột created_at và updated_at không 
+được có giá trị null, nếu không , hàm format trong Eloquent Resource sẽ báo lỗi 
+ 
+4. Xóa 1 resource 
+- Code trong  hàm destroy() của ProductController:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 5 
+ 
+ 
+- Test với Postman, xong xem trong db phải thấy dữ liệu bị xóa 
+ 
+ 
+5. Trả về chi tiết 1 resource 
+- Code trong  hàm show của ProductController: 
+ 
+- Test với Postman, sẽ phải thấy dữ liệu đổ về
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 6 
+ 
+ 
+Bài 3:  
+Sinh viên làm tương tự với table loaisanpham (tên field tùy ý) 
+*** Yêu cầu nộp bài:  
+SV nén file (hoặc share thư mục google drive) bao gồm các yêu cầu đã thực hiện 
+trên, nộp LMS đúng thời gian quy định của giảng viên. KH&#5178114;NG NỘP BÀI COI NHƯ 
+KH&#5178114;NG C&#5178113; ĐIỂM.  
+--- Hết ---

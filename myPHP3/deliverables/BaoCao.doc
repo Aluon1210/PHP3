@@ -1,0 +1,49 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Times New Roman;}{\f1 Arial;}}
+\fs28\b B\~AO C\'C1O ASSIGNMENT PHP3 (Laravel + MySQL)\b0\par
+\fs24\par
+\b 1. Th\^ong tin d\'1ef1 \~an\b0\par
+- C\^ong ngh\'87: Laravel, Blade, Query Builder (DB::table), MySQL (XAMPP).\par
+- M\^o h\`\inh: FrontEnd (tin t\'1ee9c + s\'1ea3n ph\'1ea9m) + User + BackEnd (qu\'1ea3n tr\'1ecb).\par
+\par
+\b 2. C\'e1c ch\'1ee9c n\u259?ng \u273? t\uc792? th\u7921?c hi\u7879?n (Y1)\b0\par
+\b Y1.1 \u8211 \u272? CSDL, c\u7845?u h\u236`nh project, layout\b0\par
+- \u272? c\u7845?u tr\u250?c layout Blade (header/menu, footer), giao di\u7879?n Vi\u7879?t ho\u225? to\u224?n.\par
+- Truy v\u7845?n d\u7919? li\u7879?u b\u7857?ng Query Builder (DB::table) + ph\u226?n trang.\par
+\par
+\b Y1.2 \u8211 Chi ti\u7871?t tin, tin trong lo\u7841?i, t\u236`m ki\u7871?m\b0\par
+- Danh s\'e1ch tin: hi\u7875?n th\u7883? ti\u234u \u273?\u7873?, t\'f3m t\u7855?t, ng\u224?y \u273?\u259?ng, lo\u7841?i tin, ph\u226?n trang.\par
+- Chi ti\u7871?t tin: hi\u7875?n th\u7883? n\u7897?i dung + b\u236`nh lu\u7853?n (n\u7871?u \u273?\u259?ng nh\u7853?p).\par
+- Tin trong lo\u7841?i: li\u7879?t k\u234 theo danh m\u7909?c + ph\u226?n trang.\par
+- T\u236`m ki\u7871?m: t\u236`m tin theo ti\u234u \u273?\u7873?/t\'f3m t\u7855?t v\'e0 t\u236`m s\u7843?n ph\u7849?m theo t\u234n.\par
+\par
+\b 3. C\'e1c ch\'1ee9c n\u259?ng User (Y2)\b0\par
+\b Y2.1 \u8211 \u272?\u259?ng k\'fd, \u272?\u259?ng nh\u7853?p, qu\u234n m\u7853?t kh\u7849?u\b0\par
+- \u272?\u259?ng k\'fd: t\u7841?o t\'e0i kho\u7843?n (users).\par
+- \u272?\u259?ng nh\u7853?p: s\u7917? d\u7909?ng Auth (session guard), c\'f3 tu\u7923? ch\u7885?n Ghi nh\u789b? \u273?\u259?ng nh\u7853?p.\par
+- Qu\u234n m\u7853?t kh\u7849?u: t\u7841?o token reset, \u273?\u7863?t l\u7841?i m\u7853?t kh\u7849?u.\par
+\par
+\b Y2.2 \u8211 G\u7917?i mail qu\u234n m\u7853?t kh\u7849?u, k\'edch ho\u7841?t\b0\par
+- K\'edch ho\u7841?t t\'e0i kho\u7843?n: t\u7841?o activation token, g\u7917?i email k\'edch ho\u7841?t.\par
+- Qu\u234n m\u7853?t kh\u7849?u: g\u7917?i email k\'e8m link \u273?\u7863?t l\u7841?i.\par
+- N\u7871?u SMTP l\u7895?i, h\u7879? th\u7883? fallback link tr\u234n giao di\u7879?n \u273?\u7875? demo.\par
+\par
+\b 4. Ch\'1ee9c n\u259?ng BackEnd (Y3)\b0\par
+\b Y3.1 \u8211 Qu\u7843?n tr\u7883? lo\u7841?i tin (CRUD)\b0\par
+- Danh s\'e1ch / th\'eam / s\u7917?a / x\'f3a lo\u7841?i tin.\par
+\b Y3.2 \u8211 Qu\u7843?n tr\u7883? tin (CRUD)\b0\par
+- Danh s\'e1ch / th\'eam / s\u7917?a / x\'f3a tin, ch\u7885?n lo\u7841?i tin, tr\u7841?ng th\'e1i hi\u7879?n/\u7849?n.\par
+\b Y3.3 \u8211 Giao di\u7879?n\b0\par
+- Giao di\u7879?n admin r\'f5 r\'e0ng, ti\u7871?ng Vi\u7879?t, d\u7877? d\'f9ng.\par
+\par
+\b 5. \u272?i\u7873?u t\'e2m \u273?\u7855?c / s\'e1ng t\u7841?o\b0\par
+- \u193?p d\u7909?ng middleware (auth, middleware t\u7921? t\u7841?o \u273?\u7875? ph\u226?n quy\u7873?n).\par
+- \u193?p d\u7909?ng Query Builder + ph\u226?n trang + UI Vi\u7879?t ho\u225?.\par
+- T\u7841?o module gi\u7887 h\'e0ng v\'e0 \u273?\u7863?t h\'e0ng l\u01b0u DB (donhang/donhangchitiet).\par
+\par
+\b 6. H\u01b0\u789b?ng d\u7851?n n\u7897?p b\'e0i (N1, N2, N3)\b0\par
+- N1: CSDL.sql (dump MySQL).\par
+- N2: Folder ch\u7913?a to\'e0n b\u7897 source code project.\par
+- N3: BaoCao.doc (file n\'e0y).\par
+- \u272\'f3ng g\'f3i ZIP theo t\'ean: PHP3_PSxxxxx_Ten_Assignment.zip\par
+}

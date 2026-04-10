@@ -7,7 +7,7 @@ Tin xem nhiều nhất
 @section('noidung')
 <div class="news-list px-2">
     <div class="section-title mb-4 border-bottom pb-2">
-        <h2 class="h4 fw-bold m-0 text-uppercase" style="border-left: 5px solid var(--primary-yellow); padding-left: 15px;">Tin xem nhiều nhất</h2>
+        <h2 class="h4 fw-bold m-0 text-uppercase" style="border-left: 5px solid var(--primary-blue); padding-left: 15px;">Tin xem nhiều nhất</h2>
     </div>
 
     <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
@@ -19,7 +19,7 @@ Tin xem nhiều nhất
                 </div>
                 <div class="card-body p-3">
                     <h5 class="card-title h6 fw-bold mb-2 text-dark">
-                        <a href="/tin/{{ $tin->id }}" class="text-decoration-none text-dark hover-yellow">
+                        <a href="/tin/{{ $tin->id }}" class="text-decoration-none text-dark hover-blue">
                             {{ Str::limit($tin->tieuDe, 60) }}
                         </a>
                     </h5>
@@ -41,8 +41,8 @@ Tin xem nhiều nhất
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
-    .hover-yellow:hover {
-        color: var(--primary-yellow) !important;
+    .hover-blue:hover {
+        color: var(--primary-blue) !important;
     }
 </style>
 @endsection

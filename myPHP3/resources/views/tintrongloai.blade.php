@@ -7,7 +7,7 @@ Loại tin: {{ $tenloai ?? 'Danh sách' }}
 @section('noidung')
 <div class="category-page px-3">
     <div class="section-title mb-4 border-bottom pb-2">
-        <h2 class="h4 fw-bold m-0 text-uppercase" style="border-left: 5px solid var(--primary-yellow); padding-left: 15px;">
+        <h2 class="h4 fw-bold m-0 text-uppercase" style="border-left: 5px solid var(--primary-blue); padding-left: 15px;">
             {{ $tenloai ?? 'Danh sách tin' }}
         </h2>
     </div>
@@ -28,18 +28,18 @@ Loại tin: {{ $tenloai ?? 'Danh sách' }}
                 </div>
                 <div class="col-md-8">
                     <h3 class="h5 fw-bold mb-2">
-                        <a href="/tin/{{ $tin->id }}" class="text-decoration-none text-dark hover-yellow">
+                        <a href="/chi-tiet/{{ $tin->id }}" class="text-decoration-none text-dark">
                             {{ $tin->tieuDe }}
                         </a>
                     </h3>
                     <div class="d-flex align-items-center gap-3 text-muted small mb-2">
-                        <span><i class="bi bi-calendar3 me-1"></i> {{ date('d/m/Y', strtotime($tin->ngayDang)) }}</span>
+                        <span><i class="bi bi-calendar3 me-1"></i> {{ $tin->ngayDang ? date('d/m/Y', strtotime($tin->ngayDang)) : '' }}</span>
                         <span><i class="bi bi-eye me-1"></i> {{ $tin->xem }} lượt xem</span>
                     </div>
                     <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.6;">
-                        {{ Str::limit($tin->tomTat, 200) }}
+                        {{ \Illuminate\Support\Str::limit($tin->tomTat, 200) }}
                     </p>
-                    <a href="/tin/{{ $tin->id }}" class="btn btn-sm btn-outline-warning text-dark fw-bold px-3">
+                    <a href="/chi-tiet/{{ $tin->id }}" class="btn btn-sm btn-outline-primary fw-bold px-3">
                         Xem tiếp <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>

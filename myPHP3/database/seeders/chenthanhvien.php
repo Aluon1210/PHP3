@@ -24,6 +24,7 @@ class chenthanhvien extends Seeder
                 'hoTen' => $ht , 
                 'email' => Str::random(10).'@gmail.com',
                 'password' => bcrypt('thanhcong'),
+                'active' => 1,
             ]);
                 
         }         

@@ -6,30 +6,85 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class TinController extends Controller
 {
     //
-    public function index()
-    {
-        return view('home');
-    }
 
     public function lienhe()
     {
         return view('lienhe');
     }
 
+    public function index()
+    {
+        $data = DB::table('tin')
+            ->leftJoin('loaitin', 'tin.idLT', '=', 'loaitin.id')
+            ->select('tin.*', 'loaitin.ten as tenLoai')
+            ->orderBy('tin.ngayDang', 'desc')
+            ->paginate(6);
+
+        return view('Tin/danhsach', ['data' => $data]);
+    }
+
+    public function them()
+    {
+        $loaitin = DB::table('loaitin')->get();
+        return view('Tin/themtin', ['loaitin' => $loaitin]);
+    }
+
+    public function them_(Request $request)
+    {
+        $t = new \App\Models\Tin;
+        $t->tieuDe = $request->tieuDe;
+        $t->tomTat = $request->tomTat;
+        $t->urlHinh = $request->urlHinh;
+        $t->idLT = $request->idLT;
+        $t->save();
+        return redirect('/tin/ds');
+    }
+
+    public function xoa($id)
+    {
+        $t = \App\Models\Tin::find($id);
+        if ($t == null) return redirect('/tin/ds');
+        $t->delete();
+        return redirect('/tin/ds');
+    }
+
+    public function capnhat($id)
+    {
+        $t = \App\Models\Tin::find($id);
+        if ($t == null) return redirect('/tin/ds');
+        $loaitin = DB::table('loaitin')->get();
+        return view('Tin/capnhattin', ['tin' => $t, 'loaitin' => $loaitin]);
+    }
+
+    public function capnhat_(Request $request, $id)
+    {
+        $t = \App\Models\Tin::find($id);
+        if ($t == null) return redirect('/tin/ds');
+
+        $t->tieuDe = $request->tieuDe;
+        $t->tomTat = $request->tomTat;
+        $t->urlHinh = $request->urlHinh;
+        $t->idLT = $request->idLT;
+        $t->save();
+
+        return redirect('/tin/ds');
+    }
     public function chitiet($id)
     {
         $tin = DB::table('tin')->where('id', $id)->first();
         if (!$tin) return redirect('/');
-        
+
         $binhluan = DB::table('binhluan')
-            ->join('thanhvien', 'binhluan.idUser', '=', 'thanhvien.id')
+            ->join('users', 'binhluan.idUser', '=', 'users.id')
             ->where('idTin', $id)
             ->where('binhluan.active', 1)
-            ->select('binhluan.*', 'thanhvien.hoTen')
+            ->select('binhluan.*', 'users.name as hoTen')
             ->orderBy('ngayDang', 'desc')
             ->get();
 
@@ -38,7 +93,7 @@ class TinController extends Controller
 
     public function binhluan(Request $request)
     {
-        if (!Session::has('user')) {
+        if (!Auth::check()) {
             return back()->withErrors(['email' => 'Vui lòng đăng nhập để bình luận.']);
         }
 
@@ -49,7 +104,7 @@ class TinController extends Controller
 
         DB::table('binhluan')->insert([
             'idTin' => $request->idTin,
-            'idUser' => Session::get('user.id'),
+            'idUser' => Auth::id(),
             'noiDung' => $request->noiDung,
             'ngayDang' => now(),
             'active' => 1,
@@ -62,7 +117,10 @@ class TinController extends Controller
 
     public function tintrongloai($idLT)
     {
-        $listtin = DB::table('tin')->where('idLT', $idLT)->paginate(2);
+        $listtin = DB::table('tin')
+            ->where('idLT', $idLT)
+            ->orderBy('ngayDang', 'desc')
+            ->paginate(6);
         $tenloai = DB::table('loaitin')->where('id', $idLT)->value('ten');
         return view('tintrongloai', ['listtin' => $listtin, 'tenloai' => $tenloai]);
     }
@@ -70,7 +128,7 @@ class TinController extends Controller
     public function timkiem(Request $request)
     {
         $keyword = $request->input('keyword');
-        
+
         // Tìm kiếm tin tức
         $listtin = DB::table('tin')
             ->where('tieuDe', 'like', "%{$keyword}%")
@@ -83,10 +141,10 @@ class TinController extends Controller
             ->get();
 
         return view('timkiem', [
-            'listtin' => $listtin, 
+            'listtin' => $listtin,
             'listsp' => $listsp,
             'keyword' => $keyword,
-            'tenloai' => 'Kết quả tìm kiếm cho: "'.$keyword.'"'
+            'tenloai' => 'Kết quả tìm kiếm cho: "' . $keyword . '"'
         ]);
     }
 }

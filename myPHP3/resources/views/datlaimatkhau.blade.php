@@ -8,9 +8,9 @@
 <div class="py-5">
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <div class="card shadow border-0">
-                <div class="card-header bg-warning text-dark fw-bold text-center py-3">
-                    <h4 class="mb-0">ĐẶT LẠI MẬT KHẨU</h4>
+            <div class="card shadow border-0 overflow-hidden">
+                <div class="card-header text-white fw-bold text-center py-4" style="background-color: var(--primary-navy);">
+                    <h4 class="mb-0 text-uppercase">ĐẶT LẠI MẬT KHẨU</h4>
                 </div>
                 <div class="card-body p-5">
                     @if($errors->any())
@@ -37,8 +37,8 @@
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-warning fw-bold">CẬP NHẬT MẬT KHẨU</button>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn-navy py-2">CẬP NHẬT MẬT KHẨU</button>
                         </div>
                     </form>
                 </div>

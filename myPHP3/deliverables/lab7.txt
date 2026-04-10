@@ -1,0 +1,259 @@
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 1 
+ 
+LAB 7 MÔN LẬP TRÌNH PHP3: VALIDATION & SEND MAIL  
+MỤC TIÊU: 
+Kết thúc bài thực hành này bạn có khả năng 
+✓ Triển khai validate các loại dữ liệu đầu vào 
+✓ Send mail qua API Server 
+NỘI DUNG 
+Chuẩn bị:  
+1. Cài Laravel vào folder la7 
+2. Tạo database có tên la7 và file .env cấu hình kết nối đến database vừa tạo. 
+Bài 1: Kiểm tra dữ liệu với hàm validate() của đối tượng Request 
+1. Tạo controller, định nghĩa action và nạp view 
+- Tạo controller có tên HsController, trong đó định nghĩa 2 action: 
+public function hs(){ 
+   return view("nhaphs"); 
+}    
+function hs_store(Request $request){ 
+   echo "Code xử lý lưu thông tin học sinh"; 
+} 
+2. Tạo route  
+Tạo route dẫn vào 2 action vừa định nghĩa 
+Route::get("hs",[App\Http\Controllers\HsController::class,'hs']); 
+Route::post("hs",[App\Http\Controllers\HsController::class,'hs_store'])-
+>name('hs_store'); 
+3. Tạo view 
+- Tạo file views/nhaphs.blade.php 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/b
+ootstrap.min.css"> 
+<div class="col-6 m-auto"> 
+<form method="post" class="p-3 border border-primary">   
+  <h3 class="h4 bg-info p-2 mx-n3 mt-n3 text-white">NHẬP THÔNG TIN HỌC SINH</h3> 
+  <div class="form-group row"> 
+    <label class="col-3">Họ tên học sinh</label> 
+    <div class="col-9"> 
+      <input value="{{old('hoten')}}" type="text" class="form-control" name="hoten"> 
+    </div> 
+  </div>
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 2 
+ 
+  <div class="form-group row"> 
+    <label class="col-3">Tuổi</label> 
+    <div class="col-9"> 
+      <input value="{{old('tuoi')}}" type="text" class="form-control" name="tuoi"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">Ngày sinh</label> 
+    <div class="col-9"> 
+      <input value="{{old('ngaysinh')}}" type="text" class="form-
+control" name="ngaysinh"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <div class="col-12"> 
+      <button type="submit" class="btn btn-primary w-25">Lưu thông tin</button> 
+    </div> 
+  </div> 
+</form>  
+</div>  
+- Định nghĩa action cho form :  
+action="{{route('hs_store')}}"  
+- Thêm field csrf cho form:  Trong form thêm  code:   @csrf 
+- Test http://localhost:8000/hs , submit thử sẽ phải thấy text Code xử lý lưu 
+thông tin học sinh 
+ 
+4. Hiện các thông báo lỗi trong form 
+- Code trước tag form trong view nhaphs:  
+@if ($errors->any()) 
+    <div class="alert alert-danger"> 
+        <ul> 
+            @foreach ($errors->all() as $error) 
+                <li>{{ $error }}</li> 
+            @endforeach 
+        </ul> 
+    </div> 
+@endif
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 3 
+ 
+5. Code kiểm tra trong hàm validate() của đối tượng request 
+Yêu cầu: Phải kiểm tra dữ liệu nhập trong form theo các quy tắc: 
+• Họ tên: phải nhập, độ dài từ 3 đến 20 ký tự 
+• Tuổi: bắt buộc nhập, là số nguyên, giá trị phải nhập từ 16 đến 100 
+• Ngày sinh: phải nhập kiểu theo định dạng ngày 
+Trong action hs_store ở trên, code:  
+public function hs_store(Request $request) { 
+   $ req ue st-> valid ate ([ 
+   'hot en' => [ 'req ui re d', 'min: 3', 'ma x:20'], 
+   'tuo i ' => 're quired |integ er|min:16|m ax: 100', 
+   'nga ysinh' =>[ 'req ui re d ','dat e'], 
+   ] 
+   ); 
+   e cho "Co de xử l ý"; 
+} 
+Test: http://localhost:8000/hs . Submit phải thấy báo lỗi
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 4 
+ 
+Bài 2: Validate dùng request class 
+1. Tạo controller, action và view 
+- Tạo controller có tên SvController và 2 action  
+public function sv(){ 
+   return view("nhapsv"); 
+}    
+function sv_store(RuleNhapSV $request){ 
+   echo "Code xử lý lưu thông tin sinh viên"; 
+} 
+- Thêm lệnh use request class ở đầu controller 
+use App\Http\Requests\RuleNhapSV; 
+2. Tạo route 
+Tạo route dẫn vào 2 action vừa định nghĩa 
+Route::get("sv",[App\Http\Controllers\SvController::class,'sv']); 
+Route::post("sv",[App\Http\Controllers\SvController::class,'sv_store']) -
+>name('sv_store'); 
+3. Tạo view 
+- Tạo file views/nhapsv.blade.php như sau: 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/b
+ootstrap.min.css"> 
+<div class="col-6 m-auto"> 
+<form  method="post" class="p-3 border border-primary">  
+  <div class="form-group row"> 
+    <label class="col-3">Mã SV</label> 
+    <div class="col-9"> 
+      <input value="{{old('masv')}}" type="text" class="form-control" name="masv"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">Họ tên</label> 
+    <div class="col-9"> 
+      <input value="{{old('hoten')}}" type="text" class="form-control" name="hoten"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">Tuổi</label> 
+    <div class="col-9"> 
+      <input value="{{old('tuoi')}}" type="text" class="form-control" name="tuoi"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">Ngày sinh</label> 
+    <div class="col-9"> 
+      <input value="{{old('ngaysinh')}}" type="text" class="form-
+control" name="ngaysinh"> 
+    </div>
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 5 
+ 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">CMND</label> 
+    <div class="col-9"> 
+      <input value="{{old('cmnd')}}" type="text" class="form-control" name="cmnd"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <label class="col-3">Email</label> 
+    <div class="col-9"> 
+      <input value="{{old('email')}}" type="text" class="form-control" name="email"> 
+    </div> 
+  </div> 
+  <div class="form-group row"> 
+    <div class="col-12"> 
+      <button type="submit" class="btn btn-primary w-25">Xử lý</button> 
+    </div> 
+  </div> 
+</form>  
+</div>   
+- Trong thuộc tính action của form, thêm code:  
+ 
+- Thêm field csrf trong form:  
+- Xem thử: http://localhost:8000/sv  
+ 
+4. Hiện các thông báo lỗi  trong form 
+Code trước tag form trong view nhapsv:  
+@if ($errors->any()) 
+    <div class="alert alert-danger">
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 6 
+ 
+        <ul> 
+            @foreach ($errors->all() as $error) 
+                <li>{{ $error }}</li> 
+            @endforeach 
+        </ul> 
+    </div> 
+@endif 
+5. Tạo request class và code validate 
+- Tạo request tên RuleNhapSV như sau:   
+php artisan make:request RuleNhapSV 
+- Định nghĩa các rule cần kiểm tra:  
+Mở file app/Http/Requests/RuleNhapSV.php, viết các rules trong hàm rules 
+ 
+- Cho phép request class hoạt động: Sửa false trong hàm authorize() thành true 
+- Test 
+6. Hiện lỗi riêng cho từng field  
+- Code ngay sau tag input masv:  
+ @error('masv') 
+        <span class="badge badge-danger">{{ $message }}</span> 
+ @enderror 
+- Hiện lỗi riêng cho field hoten, field tuoi, cmnd, email: Thực hiện tương tự  
+7. Định nghĩa các chuỗi báo lỗi thân thiện 
+- Trong request class , định nghĩa hàm messages() như sau:
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 7 
+ 
+ 
+- Thêm các message cho ngaysinh, cmnd, tuoi, email: sinh viên tự thực hiện 
+8. Khai báo tên thân thiện cho các field  
+- Trong request class , định nghĩa hàm attributes() như sau: 
+ 
+- Định nghĩa tên thân thiện cho cho các field ngaysinh, cmnd, tuoi, email 
+- Test:  
+Bài 3 Gửi mail với mailgun 
+1. Đăng ký mailgun , 
+Đăng ký tài khoản trên https://mailgun.com .  Xong vào Sending ➔ Domains ➔ 
+API key để lấy Private API key 
+2. Khai báo cấu hình mailgun 
+Mở file .env khai báo 2 biến MAILGUN_DOMAIN và MAILGUN_SECRET 
+3. Cài gói  Symfony Mailer 
+ composer require symfony/mailgun-mailer symfony/http-client 
+4. Tạo view chứa nội dung mail :  
+views/guimail.blade.php
+
+LAB 1 
+LẬP TRÌNH PHP3 	TRANG 8 
+ 
+5. Tạo mailable class 
+ 
+Mở file app/Mail/GuiMail.php, code trong hàm built để khai báo from, to, subject 
+public function build() { 
+    return $this 
+    ->from("diachin@guoigui.com", "Tên người gửi") 
+    ->to("diachi@nguoinhan.com") 
+    ->subject(("Tiêu đề thư")) 
+    -> attach(public_path() ."/hinh1.jpg") //đính kèm file 
+    ->view('guimail'); //nạp view nội dung mail 
+} 
+- from: nhập email người gửi (postmaster….) 
+ 
+- to: nhập địa chỉ người nhận (tùy ý) 
+- subject: nhập tiêu đề thư (tùy ý( 
+- attach: file đính kèm (tùy ý) 
+6. Thực hiện gửi mail:  
+routes/web.php 
+ 
+*** Yêu cầu nộp bài:  
+SV nén file (hoặc share thư mục google drive) bao gồm các yêu cầu đã thực hiện 
+trên, nộp LMS đúng thời gian quy định của giảng viên. KH&#5178114;NG NỘP BÀI COI NHƯ 
+KH&#5178114;NG C&#5178113; ĐIỂM.  
+--- Hết ---

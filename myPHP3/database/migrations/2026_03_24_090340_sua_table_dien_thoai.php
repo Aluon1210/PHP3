@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('baiViet')->nullable();
             $table->string('ghiChu', 500)->nullable();  
             $table->unsignedBigInteger('idLoai');
-            $table->foreign('idLoai')->references('id')->on('loaisp');
+            $table->foreign('idLoai')->references('id')->on('LoaiSP');
             
             
         });

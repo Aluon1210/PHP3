@@ -20,7 +20,7 @@
         @foreach($data as $tin)
         <tr>
             <td>{{ $tin->id }}</td>
-            <td>{{ Str::limit($tin->tieuDe, 60) }}</td>
+            <td>{{ \Illuminate\Support\Str::limit($tin->tieuDe, 60) }}</td>
             <td>{{ $tin->tenLoai }}</td>
             <td>{{ date('d/m/Y', strtotime($tin->ngayDang)) }}</td>
             <td>{{ $tin->xem }}</td>

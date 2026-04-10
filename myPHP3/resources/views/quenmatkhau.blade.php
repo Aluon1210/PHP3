@@ -8,13 +8,19 @@ Quên mật khẩu
 <div class="py-5">
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <div class="card shadow border-0">
-                <div class="card-header bg-warning text-dark fw-bold text-center py-3">
-                    <h4 class="mb-0">QUÊN MẬT KHẨU</h4>
+            <div class="card shadow border-0 overflow-hidden">
+                <div class="card-header text-white fw-bold text-center py-4" style="background-color: var(--primary-navy);">
+                    <h4 class="mb-0 text-uppercase">QUÊN MẬT KHẨU</h4>
                 </div>
                 <div class="card-body p-5">
                     @if(session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if(session('reset_link'))
+                        <div class="alert alert-warning">
+                            <div class="fw-bold mb-1">Link đặt lại mật khẩu:</div>
+                            <a href="{{ session('reset_link') }}">{{ session('reset_link') }}</a>
+                        </div>
                     @endif
 
                     <form action="/quen-mat-khau" method="POST">
@@ -27,8 +33,8 @@ Quên mật khẩu
                             @enderror
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-warning fw-bold">GỬI YÊU CẦU</button>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn-navy py-2">GỬI YÊU CẦU</button>
                         </div>
                     </form>
                     <div class="mt-3 text-center">
