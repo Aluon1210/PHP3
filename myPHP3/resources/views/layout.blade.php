@@ -507,7 +507,7 @@
                                 @if(Auth::user()->role == 'admin')
                                     <li><a class="dropdown-item py-2" href="/admin/tin"><i class="bi bi-shield-lock me-2"></i>Quản trị</a></li>
                                 @endif
-                                <li><a class="dropdown-item py-2" href="/profile"><i class="bi bi-person-gear me-2"></i>Tài khoản</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('profile') }}"><i class="bi bi-person-gear me-2"></i>Tài khoản</a></li>
                                 <li><a class="dropdown-item py-2 text-danger" href="/dang-xuat"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
                             </ul>
                         </div>
