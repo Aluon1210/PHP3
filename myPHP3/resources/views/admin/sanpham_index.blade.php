@@ -3,6 +3,12 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Danh sách Sản phẩm</h2>
+    <section>
+        <form action="/admin/sanpham" method="GET" class="d-flex">
+            <input type="text" name="sp_search" class="form-control" placeholder="Tìm kiếm sản phẩm..." value="{{ request('sp_search') }}">
+            <button class="btn btn-outline-secondary ms-2" type="submit">Tìm kiếm</button>
+        </form>
+    </section>
     <a href="/admin/sanpham/create" class="btn btn-primary">Thêm mới</a>
 </div>
 

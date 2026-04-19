@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Mail\GuiEmail;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,7 +92,11 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/donhang', [AdminController::class, 'donhang_index'])->name('admin.donhang.index');
     Route::get('/donhang/{id}', [AdminController::class, 'donhang_show'])->name('admin.donhang.show');
     Route::post('/donhang/update/{id}', [AdminController::class, 'donhang_update'])->name('admin.donhang.update');
+    // Backward-compatible: form in donhang_show POSTs to /admin/donhang/{id}
+    Route::post('/donhang/{id}', [AdminController::class, 'donhang_update'])->name('admin.donhang.update_legacy');
     Route::get('/donhang/delete/{id}', [AdminController::class, 'donhang_delete'])->name('admin.donhang.delete');
+    // Backward-compatible: link in donhang_index uses /admin/donhang-delete/{id}
+    Route::get('/donhang-delete/{id}', [AdminController::class, 'donhang_delete'])->name('admin.donhang.delete_legacy');
 
     // Quản lý Bình luận
     Route::get('/binhluan', [AdminController::class, 'binhluan_index'])->name('admin.binhluan.index');
@@ -105,4 +111,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy_breeze');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/send-mail', function () {
+    try {
+        $hasMailgunConfig = ! empty(config('services.mailgun.domain'))
+            && ! empty(config('services.mailgun.secret'));
+        $mailer = $hasMailgunConfig ? 'mailgun' : config('mail.default');
+        $recipient = env('MAIL_TO_ADDRESS', 'duongthanhcong22112006@gmail.com');
+
+        Mail::mailer($mailer)->to($recipient)->send(new GuiEmail());
+
+        return 'Email đã được gửi thành công qua ' . $mailer . '!';
+    } catch (\Throwable $e) {
+        return 'Có lỗi xảy ra khi gửi email: ' . $e->getMessage();
+    }
+});
+require __DIR__ . '/auth.php';
