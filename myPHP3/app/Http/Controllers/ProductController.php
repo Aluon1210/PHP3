@@ -1,40 +1,38 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Validator;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Schema;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $dienthoai = DB::table('dienthoai')->orderBy('id', 'desc')->paginate(12);
+        $keyword = trim((string) request('keyword', ''));
+        $query = DB::table('dienthoai')->orderBy('id', 'desc');
+        if ($keyword !== '') {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('tenDT', 'like', "%{$keyword}%")
+                    ->orWhere('moTa', 'like', "%{$keyword}%");
+            });
+        }
+
+        $dienthoai = $query->paginate(12)->withQueryString();
         $tenLoai = 'Sản phẩm điện thoại';
-        return view('dienthoai', compact('dienthoai', 'tenLoai'));
+        return view('dienthoai', compact('dienthoai', 'tenLoai', 'keyword'));
     }
 
     public function home()
     {
         $spMoi = DB::table('dienthoai')->orderBy('id', 'desc')->limit(8)->get();
-        $spGiamGia = DB::table('dienthoai')->where('gia', '<', 5000000)->limit(4)->get();
-        $loaiSP = DB::table('loaisp')->orderBy('thuTu', 'asc')->get();
+        $dienthoai = DB::table('dienthoai')
+            ->orderBy('id', 'desc')
+            ->paginate(12);
 
-        $loaiIds = $loaiSP->take(2)->pluck('id')->all();
-        $productsByLoai = collect();
-        if (!empty($loaiIds)) {
-            $products = DB::table('dienthoai')
-                ->whereIn('idLoai', $loaiIds)
-                ->orderBy('id', 'desc')
-                ->limit(24)
-                ->get();
-            $productsByLoai = $products->groupBy('idLoai');
-        }
-
-        return view('home', compact('spMoi', 'spGiamGia', 'loaiSP', 'productsByLoai'));
+        return view('home', compact('spMoi', 'dienthoai'));
     }
 
     public function byLoai($id)
@@ -59,7 +57,47 @@ class ProductController extends Controller
             $loai = DB::table('loaisp')->where('id', $sp->idLoai)->first();
         }
 
-        return view('chitietsp', ['sp' => $sp, 'loai' => $loai]);
+        $binhluan = collect();
+        if (Schema::hasColumn('binhluan', 'idSP')) {
+            $binhluan = DB::table('binhluan')
+                ->join('users', 'binhluan.idUser', '=', 'users.id')
+                ->where('idSP', $id)
+                ->where('binhluan.active', 1)
+                ->select('binhluan.*', 'users.name as hoTen')
+                ->orderBy('ngayDang', 'desc')
+                ->get();
+        }
+
+        return view('chitietsp', ['sp' => $sp, 'loai' => $loai, 'binhluan' => $binhluan]);
+    }
+
+    public function binhluanSanPham(Request $request)
+    {
+        if (!Auth::check()) {
+            return back()->withErrors(['email' => 'Vui lòng đăng nhập để bình luận sản phẩm.']);
+        }
+
+        $request->validate([
+            'idSP' => 'required|integer|exists:dienthoai,id',
+            'noiDung' => 'required|string|max:500',
+        ]);
+
+        if (!Schema::hasColumn('binhluan', 'idSP')) {
+            return back()->with('error', 'CSDL chưa hỗ trợ bình luận sản phẩm. Vui lòng chạy migrate để thêm cột idSP.');
+        }
+
+        DB::table('binhluan')->insert([
+            'idTin' => null,
+            'idSP' => (int) $request->idSP,
+            'idUser' => Auth::id(),
+            'noiDung' => $request->noiDung,
+            'ngayDang' => now(),
+            'active' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Bình luận sản phẩm đã được gửi.');
     }
 
     public function gioHang()

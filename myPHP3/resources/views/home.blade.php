@@ -45,88 +45,57 @@ Trang chủ - SHOP CÔNG NGHỆ
         <h2 class="fw-bold" style="letter-spacing: 2px;">DANH SÁCH SẢN PHẨM</h2>
     </div>
 
-    @foreach($loaiSP->take(4) as $loai)
-    <div class="category-section mb-5">
-        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-            <h3 class="h4 fw-bold m-0">
-                <a href="/loai-sp/{{ $loai->id }}" class="text-decoration-none text-dark">{{ $loai->tenLoai }}</a>
-            </h3>
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-warning text-white" type="button" data-bs-target="#carouselLoai{{ $loai->id }}" data-bs-slide="prev"><i class="bi bi-chevron-left"></i></button>
-                <button class="btn btn-sm btn-warning text-white" type="button" data-bs-target="#carouselLoai{{ $loai->id }}" data-bs-slide="next"><i class="bi bi-chevron-right"></i></button>
-            </div>
-        </div>
-        @php
-            $products = $productsByLoai->get($loai->id, collect());
-            $chunks = $products->chunk(4);
-        @endphp
-
-        <div id="carouselLoai{{ $loai->id }}" class="carousel slide category-carousel" data-bs-ride="carousel" data-bs-interval="false">
-            <div class="carousel-inner">
-                @foreach($chunks as $chunkIndex => $chunk)
-                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                        <div class="row row-cols-1 row-cols-md-4 g-4">
-                            @foreach($chunk as $sp)
-                                @php
-                                    $gia = (float) ($sp->gia ?? 0);
-                                    $giaKM = isset($sp->giaKM) && $sp->giaKM ? (float) $sp->giaKM : null;
-                                    $giaHien = $giaKM && $giaKM < $gia ? $giaKM : $gia;
-                                    $phanTram = ($giaKM && $giaKM < $gia && $gia > 0) ? round((1 - ($giaKM / $gia)) * 100) : null;
-                                @endphp
-                                <div class="col">
-                                    <div class="card h-100 border rounded-0 product-card-new">
-                                        <div class="position-relative">
-                                            <span class="badge bg-dark position-absolute top-0 start-0 m-2 rounded-pill" style="font-size: 10px; opacity: 0.8;">
-                                                {{ (int) ($sp->hot ?? 0) === 1 ? 'HOT' : 'NEW' }}
-                                            </span>
-                                            @if($phanTram)
-                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2 rounded-pill" style="font-size: 10px;">
-                                                    -{{ $phanTram }}%
-                                                </span>
-                                            @endif
-                                            @php
-                                                $img = $sp->urlHinh ?? '';
-                                                if (!$img) {
-                                                    $img = 'https://placehold.co/600x600?text=Product';
-                                                } elseif (!preg_match('~^https?://~i', $img) && $img[0] !== '/') {
-                                                    $img = '/' . $img;
-                                                }
-                                            @endphp
-                                            <div class="product-thumb">
-                                                <img src="{{ $img }}" alt="{{ $sp->tenDT }}" onerror="this.onerror=null; this.src='https://placehold.co/600x600?text=Product';">
-                                            </div>
-                                        </div>
-                                        <div class="card-body p-3 text-center border-top">
-                                            <p class="text-muted small mb-1">Phân loại: {{ $loai->tenLoai }}</p>
-                                            <h5 class="card-title h6 fw-bold mb-3 text-dark">{{ $sp->tenDT }}</h5>
-                                            @if($phanTram)
-                                                <p class="mb-1 text-muted text-decoration-line-through small">{{ number_format($gia, 0, ',', '.') }} VNĐ</p>
-                                            @endif
-                                            <p class="fw-bold text-primary mb-3">{{ number_format($giaHien, 0, ',', '.') }} VNĐ</p>
-                                            <div class="d-flex gap-2 justify-content-center">
-                                                <a href="/dien-thoai/{{ $sp->id }}" class="btn btn-outline-primary btn-sm px-4">Xem chi tiết</a>
-                                                <form action="/gio-hang/them/{{ $sp->id }}" method="POST" class="m-0">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-primary btn-sm px-4">Thêm giỏ</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach($dienthoai as $sp)
+            @php
+                $gia = (float) ($sp->gia ?? 0);
+                $giaKM = isset($sp->giaKM) && $sp->giaKM ? (float) $sp->giaKM : null;
+                $giaHien = $giaKM && $giaKM < $gia ? $giaKM : $gia;
+                $phanTram = ($giaKM && $giaKM < $gia && $gia > 0) ? round((1 - ($giaKM / $gia)) * 100) : null;
+                $img = $sp->urlHinh ?? '';
+                if (!$img) {
+                    $img = 'https://placehold.co/600x600?text=Product';
+                } elseif (!preg_match('~^https?://~i', $img) && $img[0] !== '/') {
+                    $img = '/' . $img;
+                }
+            @endphp
+            <div class="col">
+                <div class="card h-100 border rounded-0 product-card-new">
+                    <div class="position-relative">
+                        <span class="badge bg-dark position-absolute top-0 start-0 m-2 rounded-pill" style="font-size: 10px; opacity: 0.8;">
+                            {{ (int) ($sp->hot ?? 0) === 1 ? 'HOT' : 'NEW' }}
+                        </span>
+                        @if($phanTram)
+                            <span class="badge bg-danger position-absolute top-0 end-0 m-2 rounded-pill" style="font-size: 10px;">
+                                -{{ $phanTram }}%
+                            </span>
+                        @endif
+                        <div class="product-thumb">
+                            <img src="{{ $img }}" alt="{{ $sp->tenDT }}" onerror="this.onerror=null; this.src='https://placehold.co/600x600?text=Product';">
                         </div>
                     </div>
-                @endforeach
+                    <div class="card-body p-3 text-center border-top">
+                        <h5 class="card-title h6 fw-bold mb-3 text-dark">{{ $sp->tenDT }}</h5>
+                        @if($phanTram)
+                            <p class="mb-1 text-muted text-decoration-line-through small">{{ number_format($gia, 0, ',', '.') }} VNĐ</p>
+                        @endif
+                        <p class="fw-bold text-primary mb-3">{{ number_format($giaHien, 0, ',', '.') }} VNĐ</p>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a href="/dien-thoai/{{ $sp->id }}" class="btn btn-outline-primary btn-sm px-4 product-detail-link">Xem chi tiết</a>
+                            <form action="/gio-hang/them/{{ $sp->id }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-sm px-4">Thêm giỏ</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="carousel-indicators category-indicators">
-                @foreach($chunks as $chunkIndex => $chunk)
-                    <button type="button" data-bs-target="#carouselLoai{{ $loai->id }}" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex === 0 ? 'active' : '' }}"></button>
-                @endforeach
-            </div>
-        </div>
+        @endforeach
     </div>
-    @endforeach
+
+    <div class="d-flex justify-content-center mt-4 mb-3">
+        {{ $dienthoai->links() }}
+    </div>
 </div>
 
 <style>
@@ -213,12 +182,6 @@ Trang chủ - SHOP CÔNG NGHỆ
     border-color: var(--primary-navy);
 }
 
-.btn-warning {
-    background-color: var(--primary-navy) !important;
-    border: none !important;
-    border-radius: 0 !important;
-}
-
 .badge.bg-danger {
     background-color: var(--accent-red) !important;
     border-radius: 0;
@@ -226,10 +189,5 @@ Trang chủ - SHOP CÔNG NGHỆ
     font-weight: 800;
 }
 
-.category-section h3 a {
-    font-weight: 800;
-    text-transform: uppercase;
-    font-size: 22px;
-}
 </style>
 @endsection

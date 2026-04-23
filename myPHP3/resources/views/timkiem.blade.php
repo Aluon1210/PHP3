@@ -24,7 +24,7 @@ Tìm kiếm: {{ $keyword }}
                         <div class="card-body p-2">
                             <h6 class="card-title fw-bold mb-1 text-dark small">{{ $sp->tenDT }}</h6>
                             <p class="card-text fw-bold text-danger mb-2 small">{{ number_format($sp->gia, 0, ',', '.') }} đ</p>
-                            <a href="/dien-thoai" class="btn btn-xs btn-yellow w-100 py-1 fw-bold" style="font-size: 11px;">Chi tiết</a>
+                            <a href="/dien-thoai/{{ $sp->id }}" class="btn btn-xs btn-yellow w-100 py-1 fw-bold" style="font-size: 11px;">Chi tiết</a>
                         </div>
                     </div>
                 </div>

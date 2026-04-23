@@ -9,6 +9,16 @@ Danh sách điện thoại
     <div class="section-title mb-5 text-center">
         <h2 class="fw-bold" style="letter-spacing: 2px; text-transform: uppercase;">{{ $tenLoai ?? 'Sản phẩm điện thoại' }}</h2>
     </div>
+    <form action="/dien-thoai" method="GET" class="mb-4 d-flex gap-2">
+        <input
+            type="text"
+            name="keyword"
+            class="form-control"
+            placeholder="Tìm theo tên hoặc mô tả sản phẩm..."
+            value="{{ $keyword ?? request('keyword') }}"
+        >
+        <button type="submit" class="btn btn-primary px-4">Tìm kiếm</button>
+    </form>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3 mb-5">
         @foreach($dienthoai as $dt)

@@ -129,11 +129,22 @@ class AdminController extends Controller
 
     public function sanpham_index()
     {
-        $data = DB::table('dienthoai')
+        $spSearch = trim((string) request('sp_search', ''));
+
+        $query = DB::table('dienthoai')
             ->join('loaisp', 'dienthoai.idLoai', '=', 'loaisp.id')
             ->select('dienthoai.*', 'loaisp.tenLoai')
-            ->orderBy('dienthoai.id', 'desc')
-            ->paginate(15);
+            ->orderBy('dienthoai.id', 'desc');
+
+        if ($spSearch !== '') {
+            $query->where(function ($q) use ($spSearch) {
+                $q->where('dienthoai.tenDT', 'like', "%{$spSearch}%")
+                    ->orWhere('loaisp.tenLoai', 'like', "%{$spSearch}%")
+                    ->orWhere('dienthoai.moTa', 'like', "%{$spSearch}%");
+            });
+        }
+
+        $data = $query->paginate(15)->withQueryString();
 
         return view('admin.sanpham_index', compact('data'));
     }
@@ -256,9 +267,10 @@ class AdminController extends Controller
     public function binhluan_index()
     {
         $data = DB::table('binhluan')
-            ->join('tin', 'binhluan.idTin', '=', 'tin.id')
+            ->leftJoin('tin', 'binhluan.idTin', '=', 'tin.id')
+            ->leftJoin('dienthoai', 'binhluan.idSP', '=', 'dienthoai.id')
             ->join('users', 'binhluan.idUser', '=', 'users.id')
-            ->select('binhluan.*', 'tin.tieuDe', 'users.name')
+            ->select('binhluan.*', 'tin.tieuDe', 'dienthoai.tenDT', 'users.name')
             ->orderBy('binhluan.id', 'desc')
             ->paginate(15);
 

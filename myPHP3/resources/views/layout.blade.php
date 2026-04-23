@@ -655,7 +655,8 @@
     <script>
         $(document).on('click', 'a.ajax-link, .nav-links a, .footer-links a, #main-content a', function(e) {
             var url = $(this).attr('href');
-            if (!url || url === '#' || url.startsWith('javascript:') || url.startsWith('http') || $(this).data('bs-toggle')) return;
+            var isProductDetail = /^\/dien-thoai\/\d+$/i.test(url || '');
+            if (!url || url === '#' || url.startsWith('javascript:') || url.startsWith('http') || $(this).data('bs-toggle') || isProductDetail) return;
             
             e.preventDefault();
             $('#main-content').css('opacity', '0.5');

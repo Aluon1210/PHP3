@@ -6,7 +6,7 @@
 
 @section('noidung')
 <div class="row g-4">
-    <div class="col-md-5">
+    <div class="col-md-7">
         <div class="border bg-white p-4 text-center">
             @php
                 $img = $sp->urlHinh ?? '';
@@ -16,10 +16,10 @@
                     $img = '/' . $img;
                 }
             @endphp
-            <img src="{{ $img }}" class="img-fluid" style="max-height: 420px;" alt="{{ $sp->tenDT }}" onerror="this.onerror=null; this.src='https://placehold.co/600x600?text=Product';">
+            <img src="{{ $img }}" class="img-fluid d-block mx-auto" style="width: 100%; max-height: 560px; object-fit: contain;" alt="{{ $sp->tenDT }}" onerror="this.onerror=null; this.src='https://placehold.co/600x600?text=Product';">
         </div>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-5">
         <h1 class="h3 fw-bold mb-3">{{ $sp->tenDT }}</h1>
         @if($loai)
             <div class="text-muted mb-2">Danh mục: <a class="text-decoration-none" href="/loai-sp/{{ $loai->id }}">{{ $loai->tenLoai }}</a></div>
@@ -45,6 +45,41 @@
                 {{ $sp->moTa ?? 'Chưa có mô tả.' }}
             </div>
         </div>
+    </div>
+</div>
+
+<div class="comment-section mt-5 pt-4 border-top">
+    <h2 class="h5 fw-bold mb-3">Bình luận sản phẩm ({{ count($binhluan ?? []) }})</h2>
+
+    @if(Auth::check())
+        <form action="/binh-luan-san-pham" method="POST" class="mb-4">
+            @csrf
+            <input type="hidden" name="idSP" value="{{ $sp->id }}">
+            <div class="mb-2">
+                <textarea name="noiDung" class="form-control" rows="3" placeholder="Nhập bình luận của bạn..." required>{{ old('noiDung') }}</textarea>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+            </div>
+        </form>
+    @else
+        <div class="alert alert-info">
+            Vui lòng <a href="/dang-nhap">đăng nhập</a> để bình luận sản phẩm.
+        </div>
+    @endif
+
+    <div class="mt-3">
+        @forelse(($binhluan ?? []) as $bl)
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong>{{ $bl->hoTen }}</strong>
+                    <span class="text-muted small">{{ date('d/m/Y H:i', strtotime($bl->ngayDang)) }}</span>
+                </div>
+                <div class="text-muted">{{ $bl->noiDung }}</div>
+            </div>
+        @empty
+            <p class="text-muted">Chưa có bình luận nào cho sản phẩm này.</p>
+        @endforelse
     </div>
 </div>
 @endsection

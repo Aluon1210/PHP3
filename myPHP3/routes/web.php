@@ -27,6 +27,7 @@ Route::get('/tin/{id}', [TinController::class, 'chitiet'])->name('news.show');
 Route::get('/loai/{idLT}', [TinController::class, 'tintrongloai'])->name('news.byCategory');
 Route::get('/tim-kiem', [TinController::class, 'timkiem'])->name('search');
 Route::post('/binh-luan', [TinController::class, 'binhluan'])->name('comment.store');
+Route::post('/binh-luan-san-pham', [ProductController::class, 'binhluanSanPham'])->name('product.comment.store');
 Route::get('/lien-he', [TinController::class, 'lienhe'])->name('contact');
 
 // --- Giỏ hàng & Đặt hàng (ProductController) ---

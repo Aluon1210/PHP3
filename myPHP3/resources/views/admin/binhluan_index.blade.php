@@ -21,7 +21,15 @@
         @foreach($data as $row)
             <tr>
                 <td>{{ $row->id }}</td>
-                <td style="max-width: 260px;">{{ \Illuminate\Support\Str::limit($row->tieuDe, 60) }}</td>
+                <td style="max-width: 260px;">
+                    @if(!empty($row->tieuDe))
+                        [Tin] {{ \Illuminate\Support\Str::limit($row->tieuDe, 60) }}
+                    @elseif(!empty($row->tenDT))
+                        [Sản phẩm] {{ \Illuminate\Support\Str::limit($row->tenDT, 60) }}
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>{{ $row->name }}</td>
                 <td style="max-width: 420px;">{{ \Illuminate\Support\Str::limit($row->noiDung, 120) }}</td>
                 <td>{{ $row->ngayDang }}</td>
